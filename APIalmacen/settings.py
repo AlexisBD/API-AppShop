@@ -12,7 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'q+2viq7cj3)*v566hrfob^1se^)xvlyz$_7d8y20=6e2_l04e&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL=True
@@ -90,7 +91,7 @@ WSGI_APPLICATION = 'APIalmacen.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -101,7 +102,15 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+'''
+import dj_database_url
+from decouple import config
 
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 
 
 # Password validation
@@ -145,12 +154,21 @@ MEDIA_URL = '/images/'
 
 MEDIA_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media', 'images')
 
-STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media', 'static-only')
+#STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media', 'static-only')
 
-STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media', 'media'),
-)
+#STATICFILES_DIRS = (
+    #os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media', 'media'),
+#)
 
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(os.path.dirname(__file__)), 'media', 'templates'),
 )
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'media'),    
+)
+
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
