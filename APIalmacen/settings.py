@@ -9,10 +9,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'q+2viq7cj3)*v566hrfob^1se^)xvlyz$_7d8y20=6e2_l04e&'
+#SECRET_KEY = 'q+2viq7cj3)*v566hrfob^1se^)xvlyz$_7d8y20=6e2_l04e&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+#DEBUG = False
+
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
+
+SECRET_KEY = config('SECRET_KEY', default='q+2viq7cj3)*v566hrfob^1se^)xvlyz$_7d8y20=6e2_l04e&')
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -91,7 +96,7 @@ WSGI_APPLICATION = 'APIalmacen.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -102,16 +107,16 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-'''
+
 import dj_database_url
 from decouple import config
-
+'''
 DATABASES = {
     'default': dj_database_url.config(
         default=config('DATABASE_URL')
     )
 }
-
+'''
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -172,3 +177,6 @@ STATICFILES_DIRS = (
 
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+if config('DJANGO_PRODUCTION_ENV', default=False, cast=bool):
+    from .settings_production import *
