@@ -1,15 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
 from uuid import uuid4
 from datetime import date
 import os
 
-
-class Product(models.Model):        
-    code        = models.IntegerField( blank=False )
-    name        = models.CharField( max_length=50, blank=True )
-    description = models.TextField( blank=False)    
-    
+class NameImg(models.Model):
 
     def _generar_ruta_imagen(instance, filename):
         # El primer paso es extraer la extension de la imagen del
@@ -19,7 +13,7 @@ class Product(models.Model):
         # Generamos la ruta relativa a MEDIA_ROOT donde almacenar
         # el archivo, se usa el nombre de la clase y la fecha actual.
         directorio_clase = instance.__class__.__name__
-        ruta = os.path.join('images', directorio_clase,
+        ruta = os.path.join('imagenes', directorio_clase,
             date.today().strftime("%Y/%m"))
 
         # Generamos el nombre del archivo con un identificador
@@ -29,11 +23,7 @@ class Product(models.Model):
         # Devolvermos la ruta completa
         return os.path.join(ruta, nombre_archivo)
 
-    image       = models.ImageField(upload_to=_generar_ruta_imagen)
-        
+    imagen = models.ImageField(upload_to=_generar_ruta_imagen)
+
     class Meta:
-        db_table = "products"
-
- 
-
-
+        abstract = True
