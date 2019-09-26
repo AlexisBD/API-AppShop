@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken', 
     'allauth',
     'allauth.account', 
+    'allauth.socialaccount',
     'django_seed',
     'apps.users',
     'apps.products',
@@ -46,6 +47,13 @@ INSTALLED_APPS = [
     'apps.transactions',
     'apps.sales'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES':('rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_AUTHENTICATION_CLASSES':('rest_framework.authentication.TokenAuthentication',),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -109,16 +117,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-'''
-import dj_database_url
-from decouple import config
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL')
-    )
-}
-'''
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

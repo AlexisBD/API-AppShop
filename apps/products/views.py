@@ -13,22 +13,25 @@ from apps.products.serializers import ProductSerializers
 class ProductsList(APIView):
     def get(self, request, format=None):
         queryset = Product.objects.all()
-        serializer = ProductSerializers(queryset, many=True)
+        serializer = ProductSerializers(queryset, many=True)        
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        serializer = ProductSerializers(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            datas = serializer.data
-            return Response(datas)
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        rol = request.user.is_staff
+        if rol == True:
+            serializer = ProductSerializers(data = request.data)
+            if serializer.is_valid():
+                serializer.save()
+                datas = serializer.data
+                return Response(datas)
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+        return Response("No eres administrador")
 
 class ProductsDetail(APIView):
     def get_object(self, id):
-        try:
-            return Product.objects.get(pk=id)
-        except Product.DoesNotExist:
+        try:            
+            return Product.objects.get(pk=id) 
+        except Product.DoesNotExist: 
             return False
     
     def get(self, request, id, format=None):
@@ -40,18 +43,25 @@ class ProductsDetail(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, id, format=None):
-        Product.objects.get(pk=id)
-        return Response("Success")
-    
-    def put(self, request, id, format=None):
-        example = self.get_object(id)
-        if example != False:
-            serializer = ProductSerializers(example, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                datas = serializer.data
-                return Response(datas)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        rol = request.user.is_staff
+        if rol == True:
+            Product.objects.get(pk=id)
+            return Response("Delete Success")
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response("No eres administrador")
+    
+    def put(self, request, id, format=None):        
+        rol = request.user.is_staff
+        example = self.get_object(id)
+        if rol == True:
+            if example != False:
+                serializer = ProductSerializers(example, data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    datas = serializer.data
+                    return Response(datas)
+                else:
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response("No eres administrador")

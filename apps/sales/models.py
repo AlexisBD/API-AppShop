@@ -3,8 +3,8 @@ from apps.products.models import Product
 from django.contrib.auth.models import User
 
 class Sale(models.Model):
-    product_id  = models.ForeignKey( Product, related_name='sales', on_delete=models.DO_NOTHING)
-    user_id     = models.ForeignKey( User, related_name='sales',  on_delete=models.CASCADE)
+    product  = models.ForeignKey( Product, related_name='sales', on_delete=models.DO_NOTHING)
+    user     = models.ForeignKey( User, related_name='sales',  on_delete=models.CASCADE)
     quantity    = models.IntegerField( null=False )
     total       = models.DecimalField( max_digits=10, decimal_places=2 )
     dates       = models.DateTimeField( default = False )
