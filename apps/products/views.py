@@ -52,8 +52,7 @@ class ProductsList(APIView):
                     quantity        = quantityInventoryRequest,
                     description     = "Se agrego "+quantityRequest+" "+datas['name']
 
-                )
-                
+                )                
                 return Response(datas)
             return Response(serializerProduct.errors, status = status.HTTP_400_BAD_REQUEST)
         return Response("No eres administrador")
