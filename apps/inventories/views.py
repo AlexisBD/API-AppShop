@@ -15,18 +15,7 @@ class InventoriesList(APIView):
     def get(self, request, format=None):
         queryset = Inventory.objects.all()
         serializer = InventorySerializers(queryset, many=True)        
-        return Response(serializer.data)
-    
-    def post(self, request, format=None):
-        rol = request.user.is_staff
-        if rol == True:
-            serializer = InventorySerializers(data = request.data)
-            if serializer.is_valid():
-                serializer.save()
-                datas = serializer.data
-                return Response(datas)
-            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-        return Response("No eres administrador")
+        return Response(serializer.data)        
 
 class InventoriesDetail(APIView):
     def get_object(self, id):
