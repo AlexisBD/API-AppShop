@@ -9,3 +9,4 @@ urlpatterns = [
     re_path(r'^inventories/$', views.InventoriesList.as_view() ),
     re_path(r'^inventories/(?P<id>\d+)$', views.InventoriesDetail.as_view() ),
 ]
+ 

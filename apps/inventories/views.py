@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from apps.inventories.models import Inventory
 from apps.inventories.serializers import InventorySerializers
-
+ 
 
 
 class InventoriesList(APIView):

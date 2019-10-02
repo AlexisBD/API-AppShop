@@ -10,7 +10,7 @@ class Product(models.Model):
     name        = models.CharField( max_length=50, blank=True )
     description = models.TextField( blank=False)    
     
-
+    #SUBIR LA IMAGEN
     def _generar_ruta_imagen(instance, filename):
         # El primer paso es extraer la extension de la imagen del
         # archivo original

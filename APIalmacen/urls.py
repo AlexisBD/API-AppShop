@@ -29,6 +29,8 @@ urlpatterns = [
     re_path(r'^api/', include('apps.products.urls')),
     re_path(r'^api/', include('apps.inventories.urls')),
     re_path(r'^api/', include('apps.transactions.urls')),
-    re_path(r'^api/', include('apps.sales.urls')),    
+    re_path(r'^api/', include('apps.sales.urls')),      
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+] #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

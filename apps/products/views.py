@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.products.models import Product
+from apps.inventories.models import Inventory
 from apps.products.serializers import ProductSerializers
 
 
