@@ -27,7 +27,7 @@ class SalesList(APIView):
         productId = int(request.data['product'])
         print("type value", type(productId))
         
-        SALES = request
+        SALES = request.data
 
         searchIdProduct = Inventory.objects.get(product=2) 
         serializerInventory = InventorySerializers(searchIdProduct)                     
