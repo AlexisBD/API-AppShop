@@ -46,7 +46,8 @@ class ProductsList(APIView):
                 )                
                 return Response(datas)
             return Response(serializerProduct.errors, status = status.HTTP_400_BAD_REQUEST)
-        return Response("No eres administrador")
+        else:
+            return Response("No eres administrador")
 
 class ProductsDetail(APIView):
     def get_object(self, id):
@@ -95,4 +96,5 @@ class ProductsDetail(APIView):
                 )
             else:
                 return Response("No se puede remover producto por deficiencia")
-        return Response("No eres administrador")
+        else:
+            return Response("No eres administrador")

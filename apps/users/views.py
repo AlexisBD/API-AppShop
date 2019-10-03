@@ -47,16 +47,16 @@ class UsersDetail(APIView):
         rol = request.user.is_superuser
         example = self.get_object(id)
         if rol == True:
-            if example != False:
-                serializer = UserSerializers(example, data=request.data)
-                if serializer.is_valid():
-                    serializer.save()
-                    datas = serializer.data
-                    return Response(datas)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-        return Response("No eres administrador")
+            updateCajero = request.data
+            #searchIdUser = User.objects.get(pk=id) 
+            #serializerUser = UserSerializers(searchIdUser)
+            #USER = serializerUser.data
+
+            User.objects.filter(pk=id).update(
+                is_superuser = updateCajero['is_superuser']
+            )
+            return Response("Ya eres adminisrador")
+        else:
+            return Response("No eres administrador")
 
 
