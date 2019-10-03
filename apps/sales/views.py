@@ -13,9 +13,12 @@ from apps.sales.serializers import SaleSerializers
 from apps.inventories.models import Inventory
 from apps.sales.operaciones import Operaciones
 from apps.inventories.serializers import InventorySerializers
+from apps.transactions.models import Transaction
+from apps.products.models import Product
+from apps.products.serializers import ProductSerializers
 
 
-class SalesList(APIView):
+class SalesList(APIView):    
     def get(self, request, format=None):
         queryset = Inventory.objects.all()
         serializer = SaleSerializers(queryset, many=True)        
@@ -31,9 +34,11 @@ class SalesList(APIView):
         
         SALES = request.data
 
-        searchIdProduct = Inventory.objects.get(product=2) 
+        searchIdProduct = Inventory.objects.get(product=int(SALES['product'])) 
         serializerInventory = InventorySerializers(searchIdProduct)                     
         INVENTORY = serializerInventory.data
+
+        print("Vlues inventory", INVENTORY)
         ##########  POST FOR TRANSACTIONS #############                             
         op = Operaciones(INVENTORY, SALES)
         print(op.total())        
@@ -48,19 +53,26 @@ class SalesList(APIView):
             status      = SALES['status'],            
         )        
         newSale.save()
-        ##########  POST FOR TRANSACTIONS #############                             
+        ##########  UPDATE FOR PRODUCTS #############
+        Inventory.objects.filter(pk=int(SALES['product'])).update(
+            quantity = op.residuo()
+        )        
+        
+        ##########  POST FOR TRANSACTIONS #############
+        inventoryIdProductSale = INVENTORY['id']
+        print("ID inv sale: ", inventoryIdProductSale)
+        idProduct = int(request.data['product'])
+        searchIdProductInProducts = Product.objects.get(pk=idProduct) 
+        serializerProduct= ProductSerializers(searchIdProductInProducts)                     
+        PRODUCT = serializerProduct.data
+
         Transaction.objects.create(
-            inventory_id    = postInventory.id,
+            inventory_id    = inventoryIdProductSale,
             dates           = timezone.now(),
-            types           = 1,
-            quantity        = postInventory.quantity,
-            description     = "Se vendio " + request.data['quantity'] + " "+datas['name']
-        )  
-             
-       # if saleInventory.is_valid():                
-         #   saleInventory.save()                         
-        #    datas = saleInventory.data                                       
-        #  return Response(datas)
+            types           = 2,
+            quantity        = request.data['quantity'],
+            description     = "Se vendio " + request.data['quantity'] + " "+PRODUCT['name']
+        )                    
         return Response(newSale.status)
 
 class SalesDetail(APIView):
@@ -87,17 +99,29 @@ class SalesDetail(APIView):
             return Response("No eres administrador")
     
     def put(self, request, id, format=None):        
-        rol = request.user.is_staff
-        example = self.get_object(id)
-        if rol == True:
-            if example != False:
-                serializer = SaleSerializers(example, data=request.data)
-                if serializer.is_valid():
-                    serializer.save()
-                    datas = serializer.data
-                    return Response(datas)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+        rol = request.user.is_superuser
+        idSale = self.get_object(id)
+        if rol == True:                        
+            searchIdSale = Sale.objects.get(pk=id) 
+            serializerSale = SaleSerializers(searchIdSale)                     
+            SALE = serializerSale.data
+            print("Values sale cancel", SALE)
+            ##########  UPDATE FOR status SALE #############
+            Sale.objects.filter(pk=id).update(
+                status = request.data['status']
+            )
+            print("Values sale update", SALE)
+
+            searchIdProduct = Inventory.objects.get(product=int(SALE['product'])) 
+            serializerInventory = InventorySerializers(searchIdProduct)                     
+            INVENTORY = serializerInventory.data
+
+            print("Vlues inventory", INVENTORY)
+            ##########  POST FOR TRANSACTIONS #############                             
+            op = Operaciones(INVENTORY, SALE)
+
+            Inventory.objects.filter(pk=int(SALE['product'])).update(
+            quantity = op.residuo()
+        )        
+            
         return Response("No eres administrador")
