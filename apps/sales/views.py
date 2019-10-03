@@ -105,23 +105,38 @@ class SalesDetail(APIView):
             searchIdSale = Sale.objects.get(pk=id) 
             serializerSale = SaleSerializers(searchIdSale)                     
             SALE = serializerSale.data
-            print("Values sale cancel", SALE)
+            
             ##########  UPDATE FOR status SALE #############
             Sale.objects.filter(pk=id).update(
                 status = request.data['status']
             )
-            print("Values sale update", SALE)
 
+            ##########  POST FOR TRANSACTIONS ############# 
             searchIdProduct = Inventory.objects.get(product=int(SALE['product'])) 
             serializerInventory = InventorySerializers(searchIdProduct)                     
             INVENTORY = serializerInventory.data
-
-            print("Vlues inventory", INVENTORY)
-            ##########  POST FOR TRANSACTIONS #############                             
+                                        
             op = Operaciones(INVENTORY, SALE)
 
             Inventory.objects.filter(pk=int(SALE['product'])).update(
-            quantity = op.residuo()
-        )        
+                quantity = op.residuo()
+            )
+
+            ##########  POST FOR TRANSACTIONS #############
+            inventoryIdProductSale = INVENTORY['id']
+            print("ID inv sale: ", inventoryIdProductSale)
+            idProduct = int(request.data['product'])
+            searchIdProductInProducts = Product.objects.get(pk=idProduct) 
+            serializerProduct= ProductSerializers(searchIdProductInProducts)                     
+            PRODUCT = serializerProduct.data
+
+            Transaction.objects.create(
+                inventory_id    = inventoryIdProductSale,
+                dates           = timezone.now(),
+                types           = 2,
+                quantity        = request.data['quantity'],
+                description     = "Se vendio " + request.data['quantity'] + " "+PRODUCT['name']
+            )                    
+
             
         return Response("No eres administrador")
