@@ -11,7 +11,10 @@ from apps.transactions.serializers import TransactionSerializers
 
 
 class TransactionsList(APIView):
-    pass
+    def get(self, request, format=None):
+        queryset = Transaction.objects.all()
+        serializer = TransactionSerializers(queryset, many=True)        
+        return Response(serializer.data)
 
 class TransactionsDetail(APIView):
     def get_object(self, id):

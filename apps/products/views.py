@@ -75,14 +75,14 @@ class ProductsDetail(APIView):
         rol = request.user.is_superuser
         # idProduct = self.get_object(id)
         if rol == True:
-            PRODUCT = request.data['quantity']
+            PRODUCT = request.data
 
             searchIdProduct = Inventory.objects.get(pk=id) 
             serializerInventory = InventorySerializers(searchIdProduct)                     
             INVENTORY = serializerInventory.data
 
             if int(INVENTORY['quantity']) > 0:
-                total = int(INVENTORY['quantity']) - int(PRODUCT)
+                total = int(INVENTORY['quantity']) - int(PRODUCT['quantity'])
                 Inventory.objects.filter(pk=id).update(
                     quantity = total
                 )

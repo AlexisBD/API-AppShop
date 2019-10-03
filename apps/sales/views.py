@@ -60,7 +60,7 @@ class SalesList(APIView):
         
         ##########  POST FOR TRANSACTIONS #############
         inventoryIdProductSale = INVENTORY['id']
-        print("ID inv sale: ", inventoryIdProductSale)
+        
         idProduct = int(request.data['product'])
         searchIdProductInProducts = Product.objects.get(pk=idProduct) 
         serializerProduct= ProductSerializers(searchIdProductInProducts)                     
