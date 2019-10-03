@@ -73,7 +73,7 @@ class ProductsDetail(APIView):
     
     def put(self, request, id, format=None):        
         rol = request.user.is_superuser
-        idProduct = self.get_object(id)
+        # idProduct = self.get_object(id)
         if rol == True:
             PRODUCT = request.data['quantity']
 
@@ -81,5 +81,18 @@ class ProductsDetail(APIView):
             serializerInventory = InventorySerializers(searchIdProduct)                     
             INVENTORY = serializerInventory.data
 
-            print(INVENTORY)
+            if int(INVENTORY['quantity']) > 0:
+                total = int(INVENTORY['quantity']) - int(PRODUCT)
+                Inventory.objects.filter(pk=id).update(
+                    quantity = total
+                )
+                Transaction.objects.create(
+                    inventory_id    = INVENTORY['id'],
+                    dates           = timezone.now(),
+                    types           = 3,
+                    quantity        = total,
+                    description     = "Se removio el producto" + PRODUCT['name']
+                )
+            else:
+                return Response("No se puede remover producto por deficiencia")
         return Response("No eres administrador")
