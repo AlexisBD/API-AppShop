@@ -92,7 +92,7 @@ class ProductsDetail(APIView):
                     dates           = timezone.now(),
                     types           = 3,
                     quantity        = total,
-                    description     = "Se removio el producto" + PRODUCT['name']
+                    description     = "Se removio el producto " + PRODUCT['name']
                 )
             else:
                 return Response("No se puede remover producto por deficiencia")
