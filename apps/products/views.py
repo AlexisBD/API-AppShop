@@ -76,6 +76,7 @@ class ProductsDetail(APIView):
 
             if int(INVENTORY['quantity']) > 0 and int(INVENTORY['quantity']) >= int(PRODUCT['quantity']):
                 total = int(INVENTORY['quantity']) - int(PRODUCT['quantity'])
+                print("Total: ", total)
                 Inventory.objects.filter(pk=id).update(
                     quantity = total
                 )
