@@ -77,7 +77,7 @@ class ProductsDetail(APIView):
         if rol == True:
             PRODUCT = request.data['quantity']
 
-            searchIdProduct = Inventory.objects.get(product=int(PRODUCT['id'])) 
+            searchIdProduct = Inventory.objects.get(pk=idProduct) 
             serializerInventory = InventorySerializers(searchIdProduct)                     
             INVENTORY = serializerInventory.data
 
