@@ -73,16 +73,13 @@ class ProductsDetail(APIView):
     
     def put(self, request, id, format=None):        
         rol = request.user.is_superuser
-        example = self.get_object(id)
+        idProduct = self.get_object(id)
         if rol == True:
-            if example != False:
-                serializer = ProductSerializers(example, data=request.data)
-                if serializer.is_valid():
-                    serializer.save()
-                    datas = serializer.data
-                    return Response(datas)
-                else:
-                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+            PRODUCT = request.data['quantity']
+
+            searchIdProduct = Inventory.objects.get(product=int(PRODUCT['id'])) 
+            serializerInventory = InventorySerializers(searchIdProduct)                     
+            INVENTORY = serializerInventory.data
+
+            print(INVENTORY)
         return Response("No eres administrador")
