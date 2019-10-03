@@ -21,37 +21,28 @@ class ProductsList(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        rol = request.user.is_staff        
+        rol = request.user.is_superuser        
         if rol == True:
             serializerProduct = ProductSerializers(data = request.data)            
             if serializerProduct.is_valid():                
                 serializerProduct.save()                                
                 datas = serializerProduct.data                 
-                ##########  POST FOR INVENTORY #############
-                idProduct = datas['id']
-                idUser    = request.user.id
-                print("data id: ", idProduct)
-                quantityRequest = request.data['quantity']                
-                priceRequest = request.data['price']
-                taxRequest = request.data['tax']                
+                ##########  POST FOR INVENTORY #############                               
                 postInventory = Inventory.objects.create(
-                    user_id     = idUser,
-                    product_id  = idProduct,
-                    quantity    = quantityRequest,
-                    price       = priceRequest,
-                    tax         = taxRequest,                    
+                    user_id     = request.user.id,
+                    product_id  = datas['id'],
+                    quantity    = request.data['quantity'],
+                    price       = request.data['price'],
+                    tax         = request.data['tax']                    
                 )
                 postInventory.save()
-                ##########  POST FOR TRANSACTIONS #############
-                idInventoryRequest = postInventory.id
-                quantityInventoryRequest = postInventory.quantity                
+                ##########  POST FOR TRANSACTIONS #############                             
                 Transaction.objects.create(
-                    inventory_id    = idInventoryRequest,
+                    inventory_id    = postInventory.id,
                     dates           = timezone.now(),
                     types           = 1,
-                    quantity        = quantityInventoryRequest,
-                    description     = "Se agrego "+quantityRequest+" "+datas['name']
-
+                    quantity        = postInventory.quantity,
+                    description     = "Se agrego " + request.data['quantity'] + " "+datas['name']
                 )                
                 return Response(datas)
             return Response(serializerProduct.errors, status = status.HTTP_400_BAD_REQUEST)
@@ -73,7 +64,7 @@ class ProductsDetail(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
     def delete(self, request, id, format=None):
-        rol = request.user.is_staff
+        rol = request.user.is_superuser
         if rol == True:
             Product.objects.get(pk=id)
             return Response("Delete Success")
@@ -81,7 +72,7 @@ class ProductsDetail(APIView):
             return Response("No eres administrador")
     
     def put(self, request, id, format=None):        
-        rol = request.user.is_staff
+        rol = request.user.is_superuser
         example = self.get_object(id)
         if rol == True:
             if example != False:

@@ -19,7 +19,7 @@ class CustomAuthToken(ObtainAuthToken):
             'user_id': user.pk,
             'email': user.email,
             'username': user.username,
-            'is_staff': user.is_staff,
+            'is_superuser': user.is_superuser,
         }
         )
 class UsersList(APIView):
@@ -44,7 +44,7 @@ class UsersDetail(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)        
     
     def put(self, request, id, format=None):        
-        rol = request.user.is_staff
+        rol = request.user.is_superuser
         example = self.get_object(id)
         if rol == True:
             if example != False:
