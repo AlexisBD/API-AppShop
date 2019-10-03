@@ -7,7 +7,7 @@ class Sale(models.Model):
     user        = models.ForeignKey( User, related_name='sales',  on_delete=models.CASCADE)
     quantity    = models.IntegerField( null=False )
     discount    = models.IntegerField( null=False )
-    total       = models.DecimalField( max_digits=10, decimal_places=2 )
+    total       = models.DecimalField( null=True, max_digits=10, decimal_places=2 )
     dates       = models.DateTimeField( default = False )
     payment     = models.IntegerField( null=False )
     status      = models.BooleanField( default=False )
