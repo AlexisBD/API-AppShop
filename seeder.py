@@ -1,15 +1,22 @@
-from django_seed import Seed
-#from myapp.models import Game, Player
-from apps.products.models import Product
+from faker import Faker
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
 
-seeder = Seed.seeder()
+fake = Faker()
 
+url = 'http://192.168.0.16:8000/api/registration/'
+for _ in range(3):
+    username  = fake.name()
+    username  = username.split()
+    email     = fake.email()
+    password1 = fake.password()
+    password2 = password1
 
+    payload = {'username' : username[0], 'email' : email, 'password1' : password1, 'password2' : password2}
 
-seeder.add_entity(Product, 10, {
-    'code':         random.randint(0,1000),
-    'name':         faker.name(),
-    'description':  faker.text(),
-    'image':        faker.text(),
-})
-seeder.execute()
+    print(payload)
+    r = Request(url, urlencode(payload).encode())
+
+    json = urlopen(r).read().decode()
+
+    print(json)

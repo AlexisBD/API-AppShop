@@ -116,7 +116,7 @@ DATABASES = {
         'NAME': 'almacen',
         'USER': 'admin',
         'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'HOST': '192.168.0.16',
         'PORT': '5432',
     }
 }
