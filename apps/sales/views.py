@@ -39,19 +39,13 @@ class SalesList(APIView):
         # print("Cantidad que viene ", quantitySalesSend)
         quantityInventoryActual = int(quantityInventoryActual) - int(quantitySalesSend)
         # print("Cantidad actual resta ", quantityInventoryActual)
-        totalSale = quantitySalesSend * SALES['price']
+        totalSale = int(quantitySalesSend) * float(dataInventory['price'])
         print("Total ", totalSale)
+        subTotalSale = totalSale - (totalSale * float(SALES['discount'])/100)
+        print("Subttotal: ", subTotalSale)
+        totalSale = subTotalSale + flot(SALES['tax'])
 
-        newSale = Sale.objects.create(
-            user_       = request.user.id,
-            product_id  = request.data['product'],
-            quantity    = request.data['quantity'],
-            discount    = 2,
-            total       = 
-            dates       =
-            payment     =
-            status      = 
-        )        
+             
         if saleInventory.is_valid():                
             saleInventory.save()                         
             datas = saleInventory.data                                       
