@@ -27,17 +27,20 @@ class SalesList(APIView):
         productId = int(request.data['product'])
         print("type value", type(productId))
         
+        SALES = request
+
         searchIdProduct = Inventory.objects.get(product=2) 
         serializerInventory = InventorySerializers(searchIdProduct)                     
         dataInventory = serializerInventory.data 
-        print("Inventory data: ", dataInventory)
+        # print("Inventory data: ", dataInventory)
         quantityInventoryActual = dataInventory['quantity']
-        print("Cantidad actual ", quantityInventoryActual)
+        # print("Cantidad actual ", quantityInventoryActual)
         quantitySalesSend = request.data['quantity']
-        print("Cantidad que viene ", quantitySalesSend)
+        # print("Cantidad que viene ", quantitySalesSend)
         quantityInventoryActual = int(quantityInventoryActual) - int(quantitySalesSend)
-        print("Cantidad actual resta ", quantityInventoryActual)
-        totalSale = quantitySalesSend * request.data['price']
+        # print("Cantidad actual resta ", quantityInventoryActual)
+        totalSale = quantitySalesSend * SALES['price']
+        print("Total ", totalSale)
 
         newSale = Sale.objects.create(
             user_       = request.user.id,
