@@ -9,7 +9,7 @@ from rest_framework.views import APIView
 from apps.sales.models import Sale
 from apps.sales.serializers import SaleSerializers
 from apps.inventories.models import Inventory
-#from apps.inventories.views import In
+from apps.sales.operaciones import Operaciones
 from apps.inventories.serializers import InventorySerializers
 
 
@@ -31,19 +31,23 @@ class SalesList(APIView):
 
         searchIdProduct = Inventory.objects.get(product=2) 
         serializerInventory = InventorySerializers(searchIdProduct)                     
-        dataInventory = serializerInventory.data 
-        # print("Inventory data: ", dataInventory)
-        quantityInventoryActual = dataInventory['quantity']
-        # print("Cantidad actual ", quantityInventoryActual)
-        quantitySalesSend = request.data['quantity']
-        # print("Cantidad que viene ", quantitySalesSend)
-        quantityInventoryActual = int(quantityInventoryActual) - int(quantitySalesSend)
-        # print("Cantidad actual resta ", quantityInventoryActual)
-        totalSale = int(quantitySalesSend) * float(dataInventory['price'])
-        print("Total ", totalSale)
-        subTotalSale = totalSale - (totalSale * float(SALES['discount'])/100)
-        print("Subttotal: ", subTotalSale)
-        totalSale = subTotalSale + flot(SALES['tax'])
+        INVENTORY = serializerInventory.data
+
+        op = Operaciones(INVENTORY, SALES)
+        print(op.res())
+
+        
+        # quantityInventoryActual = dataInventory['quantity']
+        
+        # quantitySalesSend = request.data['quantity']
+        
+        # quantityInventoryActual = int(quantityInventoryActual) - int(quantitySalesSend)
+        
+        # totalSale = int(quantitySalesSend) * float(dataInventory['price'])
+        # print("Total ", totalSale)
+        # subTotalSale = totalSale - (totalSale * float(SALES['discount'])/100)
+        # print("Subttotal: ", subTotalSale)
+        # totalSale = subTotalSale + float(SALES['tax'])
 
              
         if saleInventory.is_valid():                
