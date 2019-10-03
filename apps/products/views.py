@@ -63,15 +63,7 @@ class ProductsDetail(APIView):
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-    
-    def delete(self, request, id, format=None):
-        rol = request.user.is_superuser
-        if rol == True:
-            Product.objects.get(pk=id)
-            return Response("Delete Success")
-        else:
-            return Response("No eres administrador")
-    
+            
     def put(self, request, id, format=None):        
         rol = request.user.is_superuser
         # idProduct = self.get_object(id)

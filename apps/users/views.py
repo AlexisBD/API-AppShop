@@ -24,24 +24,36 @@ class CustomAuthToken(ObtainAuthToken):
         )
 class UsersList(APIView):
     def get(self, request, format=None):
-        queryset = User.objects.all()
-        serializer = UserSerializers(queryset, many=True)        
-        return Response(serializer.data)
+        rol = request.user.is_superuser
+        if rol == True:
+            queryset = User.objects.all()
+            serializer = UserSerializers(queryset, many=True)        
+            return Response(serializer.data)
+        else:
+            return Response("No eres administrador")
 
 class UsersDetail(APIView):
     def get_object(self, id):
-        try:            
-            return User.objects.get(pk=id) 
-        except User.DoesNotExist: 
-            return False
+        rol = request.user.is_superuser
+        if rol == True:
+            try:            
+                return User.objects.get(pk=id) 
+            except User.DoesNotExist: 
+                return False
+        else:
+            Response("No eres administrador")
     
     def get(self, request, id, format=None):
-        example = self.get_object(id)
-        if example != False:
-            serializer = UserSerializers(example)
-            return Response(serializer.data)
+        rol = request.user.is_superuser
+        if rol == True:
+            example = self.get_object(id)
+            if example != False:
+                serializer = UserSerializers(example)
+                return Response(serializer.data)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)        
+            Response("No eres administrador")
     
     def put(self, request, id, format=None):        
         rol = request.user.is_superuser
