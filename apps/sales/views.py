@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 
 from apps.sales.models import Sale
 from apps.sales.serializers import SaleSerializers
+from apps.inventories.models import Inventory
+#from apps.inventories.views import In
+from apps.inventories.serializers import InventorySerializers
 
 
 class SalesList(APIView):
@@ -17,18 +20,28 @@ class SalesList(APIView):
         return Response(serializer.data)
 
 
-    def post(self, request, format=None):                
-        serializerSale = SaleSerializers(data = request.data)
-        if serializerProduct.is_valid():
-            serializerProduct.save()
-            datas = SaleSerializers.data 
+    def post(self, request, format=None):        
+        saleInventory = SaleSerializers(data = request.data)  
+
+        print("Request ", request.data)
+        productId = int(request.data['product'])
+        print("type value", type(productId))
+        
+        searchIdProduct = Inventory.objects.get(product=2) 
+        serializerInventory = InventorySerializers(searchIdProduct)                     
+        dataInventory = serializerInventory.data 
+        print("Inventory data: ", dataInventory)
+        
+        if saleInventory.is_valid():                
+            saleInventory.save()                         
+            datas = saleInventory.data                                       
             return Response(datas)
-        return Response(SaleSerializers.errors, status = status.HTTP_400_BAD_REQUEST)        
+        return Response(saleInventory.errors, status = status.HTTP_400_BAD_REQUEST)        
 
 class SalesDetail(APIView):
     def get_object(self, id):
         try:            
-            return Inventory.objects.get(pk=id) 
+            return Sale.objects.get(pk=id) 
         except Inventory.DoesNotExist: 
             return False
     

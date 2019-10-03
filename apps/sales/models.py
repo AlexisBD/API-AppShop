@@ -14,3 +14,4 @@ class Sale(models.Model):
 
     class Meta:
         db_table = "sales"
+ 
