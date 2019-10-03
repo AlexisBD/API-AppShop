@@ -81,7 +81,7 @@ class ProductsDetail(APIView):
             serializerInventory = InventorySerializers(searchIdProduct)                     
             INVENTORY = serializerInventory.data
 
-            if int(INVENTORY['quantity']) > 0:
+            if int(INVENTORY['quantity']) > 0 and int(INVENTORY['quantity']) > int(PRODUCT['quantity']):
                 total = int(INVENTORY['quantity']) - int(PRODUCT['quantity'])
                 Inventory.objects.filter(pk=id).update(
                     quantity = total
