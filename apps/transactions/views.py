@@ -7,11 +7,23 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.transactions.models import Transaction
-#from Products.serializers import ProductsSerializers
+from apps.transactions.serializers import TransactionSerializers
 
 
 class TransactionsList(APIView):
     pass
 
 class TransactionsDetail(APIView):
-    pass
+    def get_object(self, id):
+        try:            
+            return Transaction.objects.get(pk=id) 
+        except Inventory.DoesNotExist: 
+            return False
+    
+    def get(self, request, id, format=None):
+        example = self.get_object(id)
+        if example != False:
+            serializer = TransactionSerializers(example)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

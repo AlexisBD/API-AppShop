@@ -1,6 +1,7 @@
 from django.db import models
 from apps.inventories.models import Inventory
-# Create your models here.
+
+
 class Transaction(models.Model):
     inventory    = models.ForeignKey( Inventory, related_name='transactions', on_delete=models.CASCADE )
     dates        = models.DateTimeField( default = False )

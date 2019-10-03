@@ -89,19 +89,12 @@ class SalesDetail(APIView):
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-    
-    def delete(self, request, id, format=None):
-        rol = request.user.is_staff
-        if rol == True:
-            Inventory.objects.get(pk=id)
-            return Response("Delete Success")
-        else:
-            return Response("No eres administrador")
+        
     
     def put(self, request, id, format=None):        
         rol = request.user.is_superuser
         idSale = self.get_object(id)
-        if rol == True:                        
+        if rol == False:                        
             searchIdSale = Sale.objects.get(pk=id) 
             serializerSale = SaleSerializers(searchIdSale)                     
             SALE = serializerSale.data
@@ -133,10 +126,8 @@ class SalesDetail(APIView):
             Transaction.objects.create(
                 inventory_id    = inventoryIdProductSale,
                 dates           = timezone.now(),
-                types           = 2,
-                quantity        = request.data['quantity'],
-                description     = "Se vendio " + request.data['quantity'] + " "+PRODUCT['name']
-            )                    
-
-            
-        return Response("No eres administrador")
+                types           = 1,
+                quantity        = op.residuo(),
+                description     = "Se cancelo la venta del producto" + PRODUCT['name']
+            )                                
+        return Response("Success")
