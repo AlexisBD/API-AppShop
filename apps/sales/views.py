@@ -20,7 +20,7 @@ from apps.products.serializers import ProductSerializers
 
 class SalesList(APIView):    
     def get(self, request, format=None):
-        queryset = Inventory.objects.all()
+        queryset = Sale.objects.all()
         serializer = SaleSerializers(queryset, many=True)        
         return Response(serializer.data)
 

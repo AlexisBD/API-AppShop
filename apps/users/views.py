@@ -33,15 +33,12 @@ class UsersList(APIView):
             return Response("No eres administrador")
 
 class UsersDetail(APIView):
-    def get_object(self, id):
-        rol = request.user.is_superuser
-        if rol == True:
-            try:            
-                return User.objects.get(pk=id) 
-            except User.DoesNotExist: 
-                return False
-        else:
-            Response("No eres administrador")
+    def get_object(self, id):        
+        try:            
+            return User.objects.get(pk=id) 
+        except User.DoesNotExist: 
+            return False
+    
     
     def get(self, request, id, format=None):
         rol = request.user.is_superuser

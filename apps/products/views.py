@@ -86,7 +86,8 @@ class ProductsDetail(APIView):
                     types           = 3,
                     quantity        = total,
                     description     = "Se removio el producto " + PRODUCT['name']
-                )
+                ) 
+                return Response("Remove success")
             else:
                 return Response("No se puede remover producto por deficiencia")
         else:
