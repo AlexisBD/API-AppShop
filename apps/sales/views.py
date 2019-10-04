@@ -98,8 +98,7 @@ class SalesDetail(APIView):
         if rol == True:                        
             searchIdSale = Sale.objects.get(pk=id) 
             serializerSale = SaleSerializers(searchIdSale)                     
-            SALE = serializerSale.data
-            print("Qshow:2")
+            SALE = serializerSale.data            
             ##########  UPDATE FOR status SALE #############
             Sale.objects.filter(pk=id).update(
                 status = request.data['status']
