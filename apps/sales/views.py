@@ -55,7 +55,7 @@ class SalesList(APIView):
         newSale.save()
         ##########  UPDATE FOR PRODUCTS #############
         Inventory.objects.filter(pk=int(SALES['product'])).update(
-            quantity = op.residuo()
+            quantity = op.residuo(int(SALES['status']))
         )        
         
         ##########  POST FOR TRANSACTIONS #############
@@ -98,7 +98,8 @@ class SalesDetail(APIView):
         if rol == True:                        
             searchIdSale = Sale.objects.get(pk=id) 
             serializerSale = SaleSerializers(searchIdSale)                     
-            SALE = serializerSale.data            
+            SALE = serializerSale.data
+            print("status: ",request.data['status'])
             ##########  UPDATE FOR status SALE #############
             Sale.objects.filter(pk=id).update(
                 status = request.data['status']
@@ -109,9 +110,11 @@ class SalesDetail(APIView):
             serializerInventory = InventorySerializers(searchIdProduct)                     
             INVENTORY = serializerInventory.data
                                         
-            op = Operaciones(INVENTORY, SALE)            
+            op = Operaciones(INVENTORY, SALE) 
+            quantitySum = op.residuo( int(request.data['status']) )
+            print("Cancel suma: ", quantitySum)                   
             Inventory.objects.filter(pk=int(SALE['product'])).update(
-                quantity = op.residuo()
+                quantity = quantitySum
             )
 
             ##########  POST FOR TRANSACTIONS #############
@@ -126,7 +129,7 @@ class SalesDetail(APIView):
                 inventory_id    = inventoryIdProductSale,
                 dates           = timezone.now(),
                 types           = 2,
-                quantity        = op.residuo(),
+                quantity        = op.residuo( int(request.data['status']) ),
                 description     = "Se cancelo la venta del producto " + PRODUCT['name']
             )                                
         return Response("Success")

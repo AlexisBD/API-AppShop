@@ -13,13 +13,18 @@ class CustomAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
+        
+        up = User.objects.update(
+            first_name = 'Alexis'
+        )        
 
-        return Response({
+        return Response({ 
             'token': token.key,
             'user_id': user.pk,
             'email': user.email,
             'username': user.username,
             'is_superuser': user.is_superuser,
+            'first_name': user.first_name,
         }
         )
 class UsersList(APIView):
@@ -56,11 +61,7 @@ class UsersDetail(APIView):
         rol = request.user.is_superuser
         example = self.get_object(id)
         if rol == True:
-            updateCajero = request.data
-            #searchIdUser = User.objects.get(pk=id) 
-            #serializerUser = UserSerializers(searchIdUser)
-            #USER = serializerUser.data
-
+            updateCajero = request.data            
             User.objects.filter(pk=id).update(
                 is_superuser = updateCajero['is_superuser']
             )

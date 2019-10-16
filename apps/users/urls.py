@@ -9,3 +9,4 @@ urlpatterns = [
     re_path(r'^users/$', UsersList.as_view() ),
     re_path(r'^users/(?P<id>\d+)$', UsersDetail.as_view() ),
 ]
+ 
