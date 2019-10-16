@@ -13,9 +13,14 @@ class CustomAuthToken(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
+                
+        usernameForm = request.data['username']
+        token_nav = request.data['first_name'] 
+
+        print( "token nav: ", token_nav)                
         
-        up = User.objects.update(
-            first_name = 'Alexis'
+        User.objects.filter(username=usernameForm).update(
+                first_name = token_nav
         )        
 
         return Response({ 
