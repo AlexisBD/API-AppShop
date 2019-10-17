@@ -71,7 +71,7 @@ class SalesList(APIView):
             dates           = timezone.now(),
             types           = 2,
             quantity        = request.data['quantity'],
-            description     = "Se vendio " + request.data['quantity'] + " "+PRODUCT['name']
+            description     = 'Se vendio' + str(request.data['quantity']) +  ' ' + PRODUCT['name']
         )                    
         return Response("Success")
 
@@ -120,6 +120,7 @@ class SalesDetail(APIView):
             ##########  POST FOR TRANSACTIONS #############
             inventoryIdProductSale = INVENTORY['id']
             print("ID inv sale: ", inventoryIdProductSale)
+            print("Request", request.data)
             idProduct = int(request.data['product'])
             searchIdProductInProducts = Product.objects.get(pk=idProduct) 
             serializerProduct= ProductSerializers(searchIdProductInProducts)                     
