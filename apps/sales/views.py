@@ -132,5 +132,7 @@ class SalesDetail(APIView):
                 types           = 2,
                 quantity        = op.residuo( int(request.data['status']) ),
                 description     = "Se cancelo la venta del producto " + PRODUCT['name']
-            )                                
-        return Response("Success")
+            )      
+            return Response("Succes")                          
+        else:
+            return Response("No eres admin")
