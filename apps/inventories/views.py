@@ -7,15 +7,21 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.inventories.models import Inventory
+from apps.products.models import Product
 from apps.inventories.serializers import InventorySerializers
+from apps.products.serializers import ProductSerializers
+
  
 
 
 class InventoriesList(APIView):
     def get(self, request, format=None):
         queryset = Inventory.objects.all()
-        serializer = InventorySerializers(queryset, many=True)        
-        return Response(serializer.data)        
+        serializer = InventorySerializers(queryset, many=True)  
+        datas = serializer.data        
+        
+        return Response(serializer.data)                  
+                        
 
 class InventoriesDetail(APIView):
     def get_object(self, id):
